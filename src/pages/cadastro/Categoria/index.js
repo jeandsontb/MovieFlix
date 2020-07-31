@@ -32,21 +32,31 @@ const CadastroCategoria = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      setCategorias([
-        ...categorias,
-        {
-          id: 1,
-          nome: 'Front End',
-          descricao: 'Uma categoria show',
-          cor: '#cbd1ff',
-        },
-        {
-          id: 2,
-          nome: 'Back End',
-          descricao: 'Uma categoria Tops',
-          cor: '#cbd1ff',
-        },
-      ]);
+      const URL = 'http://localhost:8080/categorias';
+
+      fetch(URL)
+        .then(async (respostaDoServidor) => {
+          const resposta = await respostaDoServidor.json();
+          setCategorias([
+            ...resposta,
+          ]);
+        });
+
+      // setCategorias(
+      //   ...categorias,
+      //   {
+      //     id: 1,
+      //     nome: 'Front End',
+      //     descricao: 'Uma categoria show',
+      //     cor: '#cbd1ff',
+      //   },
+      //   {
+      //     id: 2,
+      //     nome: 'Back End',
+      //     descricao: 'Uma categoria Tops',
+      //     cor: '#cbd1ff',
+      //   },
+      // ]);
     }, 1000);
   }, []);
 
