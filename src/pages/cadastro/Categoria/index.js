@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PageDefault from '../../../components/PageDefault';
 import FormField from '../../../components/FormField';
 import Button from '../../../components/Button';
+import useForm from '../../../hoocks/useForm';
 
 const CadastroCategoria = () => {
   const valorInicial = {
@@ -11,8 +12,9 @@ const CadastroCategoria = () => {
     cor: '',
   };
 
+  const { handleChange, valores, clearForm } = useForm(valorInicial);
+
   const [categorias, setCategorias] = useState([]);
-  const [valores, setValores] = useState(valorInicial);
 
   const handleSubmit = (info) => {
     info.preventDefault();
@@ -20,49 +22,22 @@ const CadastroCategoria = () => {
       ...categorias,
       valores,
     ]);
-    setValores(valorInicial);
-  };
-
-  const setChangeValues = (chave, valor) => {
-    setValores({
-      ...valores,
-      [chave]: valor,
-    });
+    clearForm();
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      const URL = 'http://localhost:8080/categorias';
+    const URL = window.location.hostname.includes('localhost')
+      ? 'http://localhost:8080/categorias'
+      : 'https://projectmovieflix.herokuapp.com/categorias';
 
-      fetch(URL)
-        .then(async (respostaDoServidor) => {
-          const resposta = await respostaDoServidor.json();
-          setCategorias([
-            ...resposta,
-          ]);
-        });
-
-      // setCategorias(
-      //   ...categorias,
-      //   {
-      //     id: 1,
-      //     nome: 'Front End',
-      //     descricao: 'Uma categoria show',
-      //     cor: '#cbd1ff',
-      //   },
-      //   {
-      //     id: 2,
-      //     nome: 'Back End',
-      //     descricao: 'Uma categoria Tops',
-      //     cor: '#cbd1ff',
-      //   },
-      // ]);
-    }, 1000);
+    fetch(URL)
+      .then(async (respostaDoServidor) => {
+        const resposta = await respostaDoServidor.json();
+        setCategorias([
+          ...resposta,
+        ]);
+      });
   }, []);
-
-  const handleChange = (e) => {
-    setChangeValues(e.target.getAttribute('name'), e.target.value);
-  };
 
   return (
     <PageDefault>
@@ -76,8 +51,8 @@ const CadastroCategoria = () => {
         <FormField
           label="Nome da categoria "
           type="text"
-          name="nome"
-          value={valores.nome}
+          name="titulo"
+          value={valores.titulo}
           onChange={handleChange}
         />
 
@@ -88,18 +63,6 @@ const CadastroCategoria = () => {
           value={valores.descricao}
           onChange={handleChange}
         />
-
-        {/* <div>
-              <label>
-                Descrição:
-                <textarea
-                  type="text"
-                  name="descricao"
-                  value={valores.descricao}
-                  onChange={handleChange}
-                />
-              </label>
-            </div> */}
 
         <FormField
           label="Cor "
@@ -122,7 +85,7 @@ const CadastroCategoria = () => {
 
       <ul>
         {categorias.map((categoria) => (
-          <li key={`${categoria.nome}`}>{ categoria.nome }</li>
+          <li key={`${categoria.titulo}`}>{ categoria.titulo }</li>
         ))}
       </ul>
 
